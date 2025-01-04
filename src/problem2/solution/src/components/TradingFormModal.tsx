@@ -15,15 +15,6 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
 }) => {
   const context = useContext(TradingPageContext);
   const tokens = context?.tokens || []
-
-  // const getImage = async (image: string) => {
-  //   const importedSrc = await importImage(image)
-  //   console.log('importedSrc:', importedSrc)
-  //   return importedSrc
-  // }
-  // console.log('useImportImage:', importImage('USD'), getImage('USD'))
-  const component = DynamicTokenIcon({ token: 'USD' })
-  console.log('----component---', component)
   return <Modal
     title="Exchange currency"
     open={isModalOpen}
@@ -36,7 +27,7 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
         { 
           title: 'Currency',
           dataIndex: 'currency',
-          width: '100px',
+          width: '120px',
           key: 'currency', 
           filterMode: 'menu',
           filters: tokens
@@ -47,8 +38,6 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
           },
           filterSearch: true,
           render: (currency: string) => {
-            // const component = DynamicTokenIcon({ token: currency })
-            // console.log('----component---', component)
             return <div className="flex flex-cow gap-2">
               <DynamicTokenIcon token={currency} />
              <span>{currency}</span>

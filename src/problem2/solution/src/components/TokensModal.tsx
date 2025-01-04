@@ -27,7 +27,7 @@ const TokensModal: FC<TokensModalProps> = ({
         { 
           title: 'Currency',
           dataIndex: 'currency',
-          width: '100px',
+          width: '120px',
           key: 'currency', 
           filterMode: 'menu',
           filters: tokens
