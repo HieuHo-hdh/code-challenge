@@ -1,7 +1,8 @@
-import { Modal, Table } from "antd";
+import { Modal, Table, Tooltip } from "antd";
 import { FC, useContext } from "react";
 import { Token } from "../model/trading.model";
 import { TradingPageContext } from "../context/tradingPageContext.context";
+import DynamicTokenIcon from "./common/DynamicTokenIcon";
 
 type TokensModalProps = {
   isModalOpen: boolean;
@@ -14,9 +15,8 @@ const TokensModal: FC<TokensModalProps> = ({
 }) => {
   const context = useContext(TradingPageContext);
   const tokens = context?.tokens || []
-
   return <Modal
-    title="Tokens"
+    title="Token Rate"
     open={isModalOpen}
     onCancel={() => setIsModalOpen(false)}
   >
@@ -27,18 +27,33 @@ const TokensModal: FC<TokensModalProps> = ({
         { 
           title: 'Currency',
           dataIndex: 'currency',
-          width: '120px',
           key: 'currency', 
           filterMode: 'menu',
           filters: tokens
-            .filter((token: Token, index: number, self: Token[]) => self.findIndex((t: Token) => t.currency === token.currency) === index)
             .map((token: Token) => ({ text: token.currency, value: token.currency })),
           onFilter: (value, record) => {
             return  record.currency.startsWith(value as string)
           },
           filterSearch: true,
+          render: (currency: string) => {
+            return <div className="flex flex-row gap-2">
+              <DynamicTokenIcon token={currency} />
+             <span>{currency}</span>
+            </div>
+          }
         },
-        { title: 'Price', dataIndex: 'price', key: 'price', showSorterTooltip: true, sorter: (a: Token, b: Token) => a.price - b.price },
+        { 
+          title: 'Price',
+          dataIndex: 'price',
+          key: 'price',
+          showSorterTooltip: true,
+          sorter: (a: Token, b: Token) => a.price - b.price,
+          render: (price: string) => {
+            return <Tooltip title={price}>
+            <span>{Number(price).toFixed(3)}</span>
+            </Tooltip>
+          }
+        },
         { title: 'Date', dataIndex: 'date', key: 'date', render: (date: string) => new Date(date).toLocaleString() },
       ]}
       rowKey={(record: Token) => `${record.currency}${record.date}${record.price}`}

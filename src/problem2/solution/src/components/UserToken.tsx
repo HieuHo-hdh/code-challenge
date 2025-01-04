@@ -1,31 +1,35 @@
 import { Button, InputNumber, message } from "antd";
-import { FC, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { CheckOutlined, CloseOutlined, EditOutlined } from '@ant-design/icons'
+import { TradingPageContext } from "../context/tradingPageContext.context";
 
-type UserTokenProps = {
-  tokenAmount: number
-  handleChangeTokenAmount: (tokenAmount: number) => void
-}
 
-const UserToken: FC<UserTokenProps> = ({ tokenAmount, handleChangeTokenAmount }) => {
+const UserToken: FC = () => {
+  const context  = useContext(TradingPageContext);
   const [editting, setEditting] = useState<boolean>(false)
-  const [newTokenAmount, setNewTokenAmount] = useState<number | null>(tokenAmount)
+  const [newTokenAmount, setNewTokenAmount] = useState<number | null>(context?.userTokenAmount || 0)
 
   const handleCloseEdit = (): void => {
     setEditting(false)
-    setNewTokenAmount(tokenAmount)
+    setNewTokenAmount(context?.userTokenAmount || 0)
   }
 
   const handleSaveEdit = (): void => {
     if (newTokenAmount !== null) {
       setEditting(false)
-      handleChangeTokenAmount(newTokenAmount as number)
+      if (context?.setUserTokenAmount) context.setUserTokenAmount(newTokenAmount as number)
     }
     else message.error('Please input a valid number')
   }
 
+  useEffect(() => {
+    if (editting) {
+      setNewTokenAmount(context?.userTokenAmount || 0)
+    }
+  }, [editting, context?.userTokenAmount])
+
   return <div className={`flex ${editting && 'flex-col'} md:flex-row gap-2 items-center`}>
-    <span className="font-light m-0 text-lg leading-[normal]">You are having {!editting && `${tokenAmount} tokens`}</span>
+    <span className="font-light m-0 text-lg leading-[normal]">You are having {!editting && `${context?.userTokenAmount || 0} ${context?.userTokenType || 'tokens'}`}</span>
     { 
       !editting ? 
         <Button type="primary" onClick={(): void => setEditting(true)} icon={<EditOutlined />}/> 
@@ -39,7 +43,6 @@ const UserToken: FC<UserTokenProps> = ({ tokenAmount, handleChangeTokenAmount })
           onPressEnter={(): void => {
             handleSaveEdit()
           }}
-          // onPressEnter={(): void => handleSaveEdit()}
         />
         <Button
           type="primary"
@@ -53,7 +56,7 @@ const UserToken: FC<UserTokenProps> = ({ tokenAmount, handleChangeTokenAmount })
           icon={<CloseOutlined />}
         />
         </div>
-        <span>tokens</span>
+        <span>{context?.userTokenType || 'tokens'}</span>
       </>
     }
   </div>
