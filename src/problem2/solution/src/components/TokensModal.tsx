@@ -1,4 +1,4 @@
-import { Modal, Table, Tooltip } from "antd";
+import { Button, Modal, Table, Tooltip } from "antd";
 import { FC, useContext } from "react";
 import { Token } from "../model/trading.model";
 import { TradingPageContext } from "../context/tradingPageContext.context";
@@ -7,11 +7,13 @@ import DynamicTokenIcon from "./common/DynamicTokenIcon";
 type TokensModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
+  handleSelectCurrency: (value: string) => void;
 }
 
 const TokensModal: FC<TokensModalProps> = ({
   isModalOpen,
   setIsModalOpen,
+  handleSelectCurrency,
 }) => {
   const context = useContext(TradingPageContext);
   const tokens = context?.tokens || []
@@ -19,6 +21,7 @@ const TokensModal: FC<TokensModalProps> = ({
     title="Token Rate"
     open={isModalOpen}
     onCancel={() => setIsModalOpen(false)}
+    footer={null}
   >
     <Table 
       dataSource={tokens}
@@ -55,6 +58,7 @@ const TokensModal: FC<TokensModalProps> = ({
           }
         },
         { title: 'Date', dataIndex: 'date', key: 'date', render: (date: string) => new Date(date).toLocaleString() },
+        { title: 'Action', key: 'action', render: (_data, record: Token) => <Button type="primary" onClick={() => {handleSelectCurrency(record.currency); setIsModalOpen(false)}}>Use</Button> }
       ]}
       rowKey={(record: Token) => `${record.currency}${record.date}${record.price}`}
       size="small"

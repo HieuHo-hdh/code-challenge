@@ -47,6 +47,10 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
     });
   }, [isModalOpen, context?.userTokenAmount, context?.userTokenType, tradingForm]);
 
+  const handleSelectCurrency = (value: string) => {
+    tradingForm.setFieldValue('currency', value);
+  }
+
   const handleSubmit = () => {
     setIsSubmitting(true);
     setTimeout(() => {
@@ -63,9 +67,6 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
       title={
         <div className="flex flex-row gap-2 items-center">
           <span>Fancy Form</span>
-          <Tooltip title="Show all tokens">
-            <Button type="primary" onClick={() => setIsShowAllTokensModal(true)} icon={<UnorderedListOutlined />} />
-          </Tooltip>
         </div>
       }
       destroyOnClose
@@ -136,7 +137,14 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
                 }
               ]}
             >
-              <Select dropdownStyle={{ width: '300px' }}>
+              <Select
+                dropdownStyle={{ width: '300px' }}
+                suffixIcon={
+                  <Tooltip title="Show all tokens">
+                    <UnorderedListOutlined onClick={() => setIsShowAllTokensModal(true)}/>
+                  </Tooltip>
+                }
+              >
                 {
                   tokens.map((token: Token, index: number) => (
                     <Select.Option value={token.currency} key={`${token.currency}${index}`}>
@@ -156,7 +164,7 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
           </div>
         </div>
       </Form>
-      <TokensModal isModalOpen={isShowAllTokensModal} setIsModalOpen={setIsShowAllTokensModal} />
+      <TokensModal isModalOpen={isShowAllTokensModal} setIsModalOpen={setIsShowAllTokensModal} handleSelectCurrency={handleSelectCurrency}/>
     </Modal>
   </>
 }
