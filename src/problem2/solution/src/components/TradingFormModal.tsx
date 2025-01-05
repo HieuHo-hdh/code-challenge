@@ -115,7 +115,7 @@ const TradingFormModal: FC<TradingFormModalProps> = ({
               ]}
               className="m-0"
             >
-              <InputNumber min={0} className="min-w-28" />
+              <InputNumber min={0} className="w-full" />
             </Form.Item>
           </div>
           <ArrowRightOutlined className="self-center text-base xs:block hidden px-2" />
